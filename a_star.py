@@ -1,5 +1,5 @@
 import pygame
-import math
+from image_det import get_pixel_colour
 from queue import PriorityQueue
 
 WIDTH = 800
@@ -127,8 +127,13 @@ def algorithm(draw, grid, start, end):
 
     # f score: estimated distance from start to end
     f_score = {spot: float("inf") for row in grid for spot in row}
-    f_score[start] = calculate_f(start.get_pos(), end.get_pos())
 
+    try:
+        f_score[start] = calculate_f(start.get_pos(), end.get_pos())
+    except AttributeError:
+        print("Attempted to run without start and end node")
+        return
+    
     # helps to see if node is in open set
     open_set_hash = {start}
 
@@ -196,17 +201,25 @@ def draw_grid(win, rows, width):
             pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width, clear_all = False, clear_path = False):
+def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False):
     win.fill(WHITE)
-    for row in grid:
-        for node in row:
-            if not clear_all:
-                node.draw(win)
 
-                if clear_path and (node.colour == RED or node.colour == GREEN or node.colour == PURPLE):
+    if draw_barriers:
+        for row in grid:
+            for node in row:
+                if not (node.colour == ORANGE or node.colour == TURQUOISE):
+                    get_colour = get_pixel_colour(node.x, node.y)
+                    node.colour = get_colour
+    else:
+        for row in grid:
+            for node in row:
+                if not clear_all:
+                    node.draw(win)
+
+                    if clear_path and (node.colour == RED or node.colour == GREEN or node.colour == PURPLE):
+                        node.colour = WHITE
+                elif clear_all:
                     node.colour = WHITE
-            elif clear_all:
-                node.colour = WHITE
 
 
     draw_grid(win, rows, width)
@@ -287,7 +300,11 @@ def main(win, width):
                         for spot in row:
                             spot.update_neighbours(grid)
                     algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
-                        
+                
+                if event.key == pygame.K_RETURN and not started:
+                    print("START")
+                    draw(win, grid, rows, width, False, False, True)
+                    
     pygame.quit()
 
 main(WIN, WIDTH)
