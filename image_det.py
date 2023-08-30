@@ -11,7 +11,10 @@ file = os.listdir(folder)[0]  # first file in folder
 file_path = os.path.join(folder, file)
 
 img = cv2.imread(file_path)
-img = cv2.resize(img, (800, 800))
+
+def set_width(WIDTH):
+    global img
+    img = cv2.resize(img, (WIDTH, WIDTH))
 
 def get_pixel_colour(y, x):
     img_pixel = array(img[x][y], int)

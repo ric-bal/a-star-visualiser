@@ -1,5 +1,5 @@
 import pygame
-from image_det import get_pixel_colour
+from image_det import *
 from queue import PriorityQueue
 
 WIDTH = 800
@@ -205,6 +205,7 @@ def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_bar
     win.fill(WHITE)
 
     if draw_barriers:
+        set_width(WIDTH)
         for row in grid:
             for node in row:
                 if not (node.colour == ORANGE or node.colour == TURQUOISE):
@@ -302,7 +303,6 @@ def main(win, width):
                     algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
                 
                 if event.key == pygame.K_RETURN and not started:
-                    print("START")
                     draw(win, grid, rows, width, False, False, True)
                     
     pygame.quit()
