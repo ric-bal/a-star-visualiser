@@ -16,7 +16,7 @@ if you would like to use your own maze:
 - draw with thick black lines (like in the image provided) on an 800px square canvas
 - place image in the 'Image' folder
 
-The program will select the first image in the folder, make sure the one you want is first
+The program will select the first image in the folder, make sure the one you want is the only one in there
 <br><br>
 To improve accuracy, increase 'rows' value (a_star.py, inside main function, ~ line 240)
 
