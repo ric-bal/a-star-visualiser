@@ -12,7 +12,8 @@
 
 ### notes on drawing mazes
 the program can only detect black pixels, and may be innacurate if the black lines are too thin <br>
-if you would like to use your own maze:
+using own maze:
+- works best with PNGs
 - draw with thick black lines (like in the image provided) on an 800px square canvas
 - place image in the 'Image' folder
 
