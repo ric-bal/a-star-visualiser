@@ -18,5 +18,5 @@ if you would like to use your own maze:
 
 The program will select the first image in the folder, make sure the one you want is first
 <br><br>
-To improve accuracy, increase WIDTH value (top of a_star.py)
+To improve accuracy, increase 'rows' value (a_star.py, inside main function, ~ line 240)
 
