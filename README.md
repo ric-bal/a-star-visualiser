@@ -13,9 +13,9 @@
 ### notes on drawing mazes
 the program only detects black and shades of grey, and may be innacurate if lines are drawn too thin <br><br>
 using own maze:
-- works best with PNGs
 - draw with thick black lines (like in the 'maze example' image provided) on an 800px square canvas
 - place image in the 'Image' folder
+- example mazes provided
 
 The program will select the first image in the folder, make sure the one you want to scan is the only one in there <br>
 
