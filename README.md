@@ -11,13 +11,17 @@
 <br><hr>
 
 ### notes on drawing mazes
-the program can only detect black pixels, and may be innacurate if the black lines are too thin <br><br>
+the program only detects black and shades of grey, and may be innacurate if lines are drawn too thin <br><br>
 using own maze:
 - works best with PNGs
-- draw with thick black lines (like in the image provided) on an 800px square canvas
+- draw with thick black lines (like in the 'maze example' image provided) on an 800px square canvas
 - place image in the 'Image' folder
 
-The program will select the first image in the folder, make sure the one you want is the only one in there
-<br><br>
-To improve accuracy, increase 'rows' value (a_star.py, inside main function, ~ line 240)
+The program will select the first image in the folder, make sure the one you want to scan is the only one in there <br>
 
+<br><hr>
+to improve accuracy:
+- increase rows
+- increase pixel scan leniency <br>
+(more info at the top of a_star.py file)
+<br>
