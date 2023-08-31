@@ -1,6 +1,6 @@
 """
 TO IMPROVE IMAGE SCANNING ACCURACY:
-- increase rows (~ line 255, a_star.py)
+- increase rows (~ line 246, a_star.py)
 - increase array values (~ line 7, image_det.py)
 """
 
