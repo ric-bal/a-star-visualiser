@@ -4,6 +4,7 @@ import cv2
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+check_array = array([80, 80, 80]) # increase array values for more leniency
 
 # GETTING IMAGE FILE
 folder = 'Image\\'
@@ -18,7 +19,7 @@ def set_width(WIDTH):
 
 def get_pixel_colour(y, x):
     img_pixel = array(img[x][y], int)
-    if not False in (img_pixel == BLACK):
+    if not False in (img_pixel <= check_array): 
         return BLACK
     else:
         return WHITE

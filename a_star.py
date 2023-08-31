@@ -1,3 +1,9 @@
+"""
+TO IMPROVE IMAGE SCANNING ACCURACY:
+- increase rows (~ line 255, a_star.py)
+- increase array values (~ line 7, image_det.py)
+"""
+
 import pygame
 from image_det import *
 from queue import PriorityQueue
