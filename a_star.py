@@ -297,20 +297,22 @@ def main(win, width):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE and not started:
-                    draw(win, grid, rows, width, True, False)
+                    draw(win, grid, rows, width, clear_all=True)
                     start = None
                     end = None
 
                 if event.key == pygame.K_SPACE and not started:
-                    draw(win, grid, rows, width, False, True)
+                    draw(win, grid, rows, width, clear_path=True)
                     for row in grid:
                         for spot in row:
                             spot.update_neighbours(grid)
                     algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
                 
                 if event.key == pygame.K_RETURN and not started:
-                    draw(win, grid, rows, width, False, False, True)
+                    draw(win, grid, rows, width, draw_barriers=True)
                     
     pygame.quit()
 
-main(WIN, WIDTH)
+
+if __name__ == "__main__":
+    main(WIN, WIDTH)
