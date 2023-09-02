@@ -7,6 +7,7 @@
 - left click to remove
 - backspace to clear
 - enter to load image
+- r to randomise square colour
 
 <br><hr>
 

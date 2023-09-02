@@ -5,6 +5,7 @@ TO IMPROVE IMAGE SCANNING ACCURACY:
 """
 
 import pygame
+import random
 from image_det import *
 from queue import PriorityQueue
 
@@ -207,10 +208,20 @@ def draw_grid(win, rows, width):
         pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False):
+def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False, randoms = False):
     win.fill(WHITE)
 
-    if draw_barriers:
+    if randoms:
+        for row in grid:
+            for node in row:
+                if not (node.colour == ORANGE or node.colour == TURQUOISE):
+                    random_colour = random.randint(1,3) # 1 or 2
+                    if random_colour == 1:
+                        node.colour = BLACK
+                    else:
+                        node.colour = WHITE
+
+    elif draw_barriers:
         set_width(WIDTH)
         for row in grid:
             for node in row:
@@ -310,6 +321,9 @@ def main(win, width):
                 
                 if event.key == pygame.K_RETURN and not started:
                     draw(win, grid, rows, width, draw_barriers=True)
+
+                if event.key == pygame.K_r and not started:
+                    draw(win, grid, rows, width, randoms=True)
                     
     pygame.quit()
 
