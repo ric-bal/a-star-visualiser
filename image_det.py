@@ -1,10 +1,13 @@
 import os
 from numpy import * 
 import cv2
+import a_star
+
+RGB = a_star.RGB
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-check_array = array([100, 100, 100]) # increase all array values for more leniency
+check_array = array([RGB, RGB, RGB]) 
 
 # GETTING IMAGE FILE
 folder = 'Image\\'
@@ -18,9 +21,6 @@ def set_width(WIDTH):
     #pass
     global img
     img = cv2.resize(img, (WIDTH, WIDTH))
-    cv2.imshow('image',img)
-    cv2.waitKey(0)
-    cv2.destroyWindow('image')
 
 
 def get_pixel_colour(y, x):

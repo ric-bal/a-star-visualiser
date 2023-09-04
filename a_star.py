@@ -1,11 +1,6 @@
-"""
-TO IMPROVE IMAGE SCANNING ACCURACY:
-- increase rows (~ line 246, a_star.py)
-- increase array values (~ line 7, image_det.py)
-"""
-
 import pygame
 import random
+import time
 from image_det import *
 from queue import PriorityQueue
 
@@ -23,6 +18,14 @@ PURPLE = (128, 0, 128)
 ORANGE= (255, 165, 0)
 GREY = (128, 128, 128)
 TURQUOISE = (64, 224, 208)
+
+"""
+TO IMPROVE IMAGE SCANNING ACCURACY:
+- increase ROWS
+- increase RGB
+"""
+ROWS = 50
+RGB = 100
 
 
 class Node:
@@ -113,7 +116,7 @@ def reconstruct_path(came_from, start, current, draw):
     end.colour = TURQUOISE
 
 
-def algorithm(draw, grid, start, end):
+def a_star_algorithm(draw, grid, start, end):
     count = 0
 
     # efficient way to get smallest element of queue
@@ -135,11 +138,8 @@ def algorithm(draw, grid, start, end):
     # f score: estimated distance from start to end
     f_score = {spot: float("inf") for row in grid for spot in row}
 
-    try:
-        f_score[start] = calculate_f(start.get_pos(), end.get_pos())
-    except AttributeError:
-        print("Attempted to run without start and end node")
-        return
+    f_score[start] = calculate_f(start.get_pos(), end.get_pos())
+
     
     # helps to see if node is in open set
     open_set_hash = {start}
@@ -187,6 +187,72 @@ def algorithm(draw, grid, start, end):
     return False
 
 
+def reverse_colours(win, grid, rows, width):
+    win.fill(WHITE)
+
+    for row in grid:
+        for node in row:
+            if node.colour == WHITE:
+                node.colour = BLACK
+            else:
+                node.colour = WHITE
+
+    draw_grid(win, rows, width)
+    pygame.display.update()
+
+
+def dfs_maze(draw, reverse_colours, start):
+    visited = []
+    stack = [] # FIFO, so traversing node graph vertically
+
+    visited.append(start)
+    stack.append(start)
+
+    
+    # help from:  https://github.com/ClementFranger/mini_maze_bot/tree/master#
+
+    # while stack is not empty
+    while stack: 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        # element at top of stack
+        current = stack.pop()
+        current_neighbours = current.neighbours
+
+        not_visited_neighbours = []
+        for neighbour in current_neighbours:
+            # add to potential next node choices
+            if neighbour not in visited:
+                not_visited_neighbours.append(neighbour)
+        for neighbour in not_visited_neighbours:
+            # add to stack to be considered later
+            stack.append(neighbour)
+            visited.append(neighbour)
+
+            # all neighbours that were already visited
+            current_neighbours.remove(neighbour)
+  
+        if not_visited_neighbours:
+            # random next node for random path
+            next_node = random.choice(not_visited_neighbours)
+            next_node.make_barrier()
+            current.make_barrier()
+
+            visited.extend([next_node, current])
+            stack.append(next_node)
+        else:
+            # consider previous node for potential paths
+            consider_node = visited[-1]
+            if len(consider_node.neighbours) == 4:
+                visited.remove(consider_node)
+        draw()
+        #time.sleep(0.001)
+    reverse_colours()
+
+
+
 def make_grid(rows, width):
     grid = []
     gap = width // rows
@@ -208,20 +274,10 @@ def draw_grid(win, rows, width):
         pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False, randoms = False):
+def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False):
     win.fill(WHITE)
 
-    if randoms:
-        for row in grid:
-            for node in row:
-                if not (node.colour == ORANGE or node.colour == TURQUOISE):
-                    random_colour = random.randint(1,3) # 1 or 2
-                    if random_colour == 1:
-                        node.colour = BLACK
-                    else:
-                        node.colour = WHITE
-
-    elif draw_barriers:
+    if draw_barriers:
         set_width(WIDTH)
         for row in grid:
             for node in row:
@@ -244,6 +300,7 @@ def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_bar
     pygame.display.update()
 
 
+
 def get_clicked_position(pos, rows, width):
     gap = width // rows
     y, x = pos
@@ -254,7 +311,7 @@ def get_clicked_position(pos, rows, width):
 
 
 def main(win, width):
-    rows = 50     # set to factors of WIDTH (originally 50)
+    rows = ROWS     # set to factors of WIDTH (originally 50)
     grid = make_grid(rows, width)
 
     start = None
@@ -312,19 +369,24 @@ def main(win, width):
                     start = None
                     end = None
 
-                if event.key == pygame.K_SPACE and not started:
+                if event.key == pygame.K_SPACE and not started and start != None and end != None:
                     draw(win, grid, rows, width, clear_path=True)
                     for row in grid:
                         for spot in row:
                             spot.update_neighbours(grid)
-                    algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
+                    a_star_algorithm(lambda: draw(win, grid, rows, width), grid, start, end)
                 
                 if event.key == pygame.K_RETURN and not started:
                     draw(win, grid, rows, width, draw_barriers=True)
 
-                if event.key == pygame.K_r and not started:
-                    draw(win, grid, rows, width, randoms=True)
-                    
+                if event.key == pygame.K_m and not started and start != None:
+                    end = None
+                    draw(win, grid, rows, width, clear_all=True)
+                    for row in grid:
+                        for spot in row:
+                            spot.update_neighbours(grid)
+                    dfs_maze(lambda: draw(win, grid, rows, width), lambda: reverse_colours(win, grid, rows, width), start)
+                    start = None
     pygame.quit()
 
 

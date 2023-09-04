@@ -7,7 +7,7 @@
 - left click to remove
 - backspace to clear
 - enter to load image
-- r to randomise square colour
+- m to generate mazes
 
 <br><hr>
 
@@ -22,7 +22,7 @@ The program will select the first image in the folder, make sure the one you wan
 
 <br><hr>
 to improve accuracy:
-- increase rows
-- increase pixel scan leniency <br>
-(more info at the top of a_star.py file)
+- increase rows variable
+- increase RGB variable <br>
+(top of a_star.py file)
 <br>
