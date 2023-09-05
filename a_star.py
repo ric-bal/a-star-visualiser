@@ -24,8 +24,8 @@ TO IMPROVE IMAGE SCANNING ACCURACY:
 - increase ROWS
 - increase RGB
 """
-ROWS = 50
-RGB = 100
+ROWS = 50       # set to factors of WIDTH (originally 50)
+RGB = 100       # increase for greater leniency (originally 100)
 
 
 class Node:
@@ -192,10 +192,11 @@ def reverse_colours(win, grid, rows, width):
 
     for row in grid:
         for node in row:
-            if node.colour == WHITE:
-                node.colour = BLACK
-            else:
-                node.colour = WHITE
+            if not (node.x == 0 or node.y == 0 or node.x == 784 or node.y == 784):
+                if node.colour == WHITE:
+                    node.colour = BLACK
+                else:
+                    node.colour = WHITE
 
     draw_grid(win, rows, width)
     pygame.display.update()
@@ -226,6 +227,7 @@ def dfs_maze(draw, reverse_colours, start):
             # add to potential next node choices
             if neighbour not in visited:
                 not_visited_neighbours.append(neighbour)
+
         for neighbour in not_visited_neighbours:
             # add to stack to be considered later
             stack.append(neighbour)
@@ -233,7 +235,9 @@ def dfs_maze(draw, reverse_colours, start):
 
             # all neighbours that were already visited
             current_neighbours.remove(neighbour)
-  
+
+
+        # current node has unvisited neighbours
         if not_visited_neighbours:
             # random next node for random path
             next_node = random.choice(not_visited_neighbours)
@@ -242,6 +246,7 @@ def dfs_maze(draw, reverse_colours, start):
 
             visited.extend([next_node, current])
             stack.append(next_node)
+        # if all directions from current node visited, move to
         else:
             # consider previous node for potential paths
             consider_node = visited[-1]
@@ -274,7 +279,7 @@ def draw_grid(win, rows, width):
         pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False):
+def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_barriers = False, draw_borders = False):
     win.fill(WHITE)
 
     if draw_barriers:
@@ -284,6 +289,16 @@ def draw(win, grid, rows, width, clear_all = False, clear_path = False, draw_bar
                 if not (node.colour == ORANGE or node.colour == TURQUOISE):
                     get_colour = get_pixel_colour(node.x, node.y)
                     node.colour = get_colour
+
+    elif draw_borders:
+        pass
+        for row in grid:
+            for node in row:
+                if node.x == 0 or node.y == 0 or node.x == 784 or node.y == 784:
+                    node.colour = BLACK
+                node.draw(win)
+                node.update_neighbours(grid)
+
     else:
         for row in grid:
             for node in row:
@@ -311,7 +326,7 @@ def get_clicked_position(pos, rows, width):
 
 
 def main(win, width):
-    rows = ROWS     # set to factors of WIDTH (originally 50)
+    rows = ROWS    
     grid = make_grid(rows, width)
 
     start = None
@@ -385,7 +400,7 @@ def main(win, width):
                     for row in grid:
                         for spot in row:
                             spot.update_neighbours(grid)
-                    dfs_maze(lambda: draw(win, grid, rows, width), lambda: reverse_colours(win, grid, rows, width), start)
+                    dfs_maze(lambda: draw(win, grid, rows, width, draw_borders = True), lambda: reverse_colours(win, grid, rows, width), start)
                     start = None
     pygame.quit()
 
